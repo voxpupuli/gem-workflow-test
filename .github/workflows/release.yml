@@ -15,11 +15,11 @@ jobs:
         with:
           ruby-version: '2.6'
       - name: Build gem
-        shell: gem build *.gemspec
+        run: gem build *.gemspec
       - name: Setup credentials
-        shell: |
+        run: |
           mkdir -p ~/.gem
           echo -e "---\n:rubygems_api_key: ${{ secrets.RUBYGEMS_AUTH_TOKEN }}" > ~/.gem/credentials
           chmod 0600 ~/.gem/credentials
       - name: Publish gem
-        shell: gem push *.gem
+        run: gem push *.gem
