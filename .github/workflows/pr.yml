@@ -1,0 +1,15 @@
+name: Gem Release
+
+on: pull_request
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Ruby 2.6
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+      - name: Build gem
+        shell: gem build *.gemspec
