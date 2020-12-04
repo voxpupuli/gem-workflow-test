@@ -10,10 +10,10 @@ jobs:
     if: github.repository == 'voxpupuli/gem-workflow-test'
     steps:
       - uses: actions/checkout@v2
-      - name: Install Ruby 2.6
+      - name: Install Ruby 2.7
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.6'
+          ruby-version: '2.7'
       - name: Build gem
         run: gem build *.gemspec
       - name: Publish gem
