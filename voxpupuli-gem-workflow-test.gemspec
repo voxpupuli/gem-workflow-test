@@ -2,7 +2,7 @@ require 'date'
 
 Gem::Specification.new do |s|
   s.name        = 'voxpupuli-gem-workflow-test'
-  s.version     = '0.4.2'
+  s.version     = '0.4.3'
   s.date        = Date.today.to_s
   s.summary     = 'DO NOT USE - only for testing release workflows'
   s.description = 'Within Voxpupuli there are a lot of repositories maintained by various people. That requires automation, but automation requires testing.'
