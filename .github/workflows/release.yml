@@ -7,7 +7,7 @@ on:
 jobs:
   release:
     name: Release gem
-    uses: ekohl/actions/.github/workflows/release-gem@v0
+    uses: ekohl/actions/.github/workflows/release-gem.yml@v0
     with:
       allowed_owner: voxpupuli
     secrets:
