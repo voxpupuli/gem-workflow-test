@@ -6,17 +6,9 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    if: github.repository == 'voxpupuli/gem-workflow-test'
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Ruby 2.7
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '2.7'
-      - name: Build gem
-        run: gem build *.gemspec
-      - name: Publish gem
-        env:
-          GEM_HOST_API_KEY: '${{ secrets.RUBYGEMS_AUTH_TOKEN }}'
-        run: gem push *.gem
+    name: Release gem
+      uses: ekohl/actions/.github/workflows/release-gem@v0
+      with:
+        allowed_owner: voxpupuli
+      secrets:
+        api_key: ${{ secrets.RUBYGEMS_AUTH_TOKEN }}
