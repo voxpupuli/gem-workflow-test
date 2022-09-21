@@ -7,8 +7,8 @@ on:
 jobs:
   release:
     name: Release gem
-      uses: ekohl/actions/.github/workflows/release-gem@v0
-      with:
-        allowed_owner: voxpupuli
-      secrets:
-        api_key: ${{ secrets.RUBYGEMS_AUTH_TOKEN }}
+    uses: ekohl/actions/.github/workflows/release-gem@v0
+    with:
+      allowed_owner: voxpupuli
+    secrets:
+      api_key: ${{ secrets.RUBYGEMS_AUTH_TOKEN }}
