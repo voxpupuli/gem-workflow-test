@@ -5,10 +5,17 @@ on:
     ref_type: tag
 
 jobs:
-  release:
-    name: Release gem
-    uses: ekohl/actions/.github/workflows/release-gem.yml@v0
-    with:
-      allowed_owner: voxpupuli
-    secrets:
-      api_key: ${{ secrets.RUBYGEMS_AUTH_TOKEN }}
+  push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ruby
+      - uses: rubygems/release-gem@v1
