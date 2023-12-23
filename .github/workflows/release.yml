@@ -23,4 +23,4 @@ jobs:
         run: gem build *.gemspec
       - uses: rubygems/configure-rubygems-credentials@v1.0.0
       - name: Publish gem to rubygems.org
-        run: gem push -- *.gem
+        run: gem push *.gem
