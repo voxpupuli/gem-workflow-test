@@ -5,17 +5,11 @@ on:
     ref_type: tag
 
 jobs:
-  push:
-    runs-on: ubuntu-latest
-
+  release:
+    name: Release gem
     permissions:
       contents: write
       id-token: write
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ruby
-      - uses: rubygems/release-gem@v1
+    uses: ekohl/actions/.github/workflows/release-gem.yml@trusted-publishing
+    with:
+      allowed_owner: voxpupuli
