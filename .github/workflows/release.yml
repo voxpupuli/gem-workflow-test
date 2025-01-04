@@ -2,8 +2,9 @@
 name: Gem Release
 
 on:
-  create:
-    ref_type: tag
+  push:
+    tags:
+      - '*'
 
 jobs:
   push:
