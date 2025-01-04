@@ -9,6 +9,7 @@ on:
 jobs:
   push:
     runs-on: ubuntu-latest
+    environment: release
 
     permissions:
       contents: write
@@ -23,6 +24,8 @@ jobs:
       - name: Build gem
         run: gem build *.gemspec
       - uses: rubygems/configure-rubygems-credentials@v1.0.0
+        with:
+          role-to-assume: ${{ secrets.RUBYGEMS_OIDC_ROLE }}
       - name: Publish gem to rubygems.org
         run: gem push *.gem
       - name: Wait for release to propagate
