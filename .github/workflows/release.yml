@@ -25,3 +25,7 @@ jobs:
       - uses: rubygems/configure-rubygems-credentials@v1.0.0
       - name: Publish gem to rubygems.org
         run: gem push *.gem
+      - name: Wait for release to propagate
+        run: |
+          gem install rubygems-await
+          gem await *.gem
