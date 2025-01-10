@@ -7,28 +7,8 @@ on:
       - '*'
 
 jobs:
-  push:
-    runs-on: ubuntu-latest
-    environment: release
-
-    permissions:
-      contents: write
-      id-token: write
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ruby
-      - name: Build gem
-        run: gem build *.gemspec
-      - uses: rubygems/configure-rubygems-credentials@v1.0.0
-        with:
-          role-to-assume: ${{ secrets.RUBYGEMS_OIDC_ROLE }}
-      - name: Publish gem to rubygems.org
-        run: gem push *.gem
-      - name: Wait for release to propagate
-        run: |
-          gem install rubygems-await
-          gem await *.gem
+  release:
+    name: Release gem
+    uses: theforeman/actions/.github/workflows/release-gem.yml@use-credential-setup
+    with:
+      allowed_owner: voxpupuli
