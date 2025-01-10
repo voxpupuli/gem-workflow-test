@@ -12,3 +12,5 @@ jobs:
     uses: theforeman/actions/.github/workflows/release-gem.yml@use-credential-setup
     with:
       allowed_owner: voxpupuli
+    permissions:
+      id-token: write
