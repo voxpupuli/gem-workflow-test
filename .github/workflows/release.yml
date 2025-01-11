@@ -16,4 +16,4 @@ jobs:
       id-token: write
 
     steps:
-      - uses: ekohl/ruby-release@master
+      - uses: ekohl/ruby-release@v0
