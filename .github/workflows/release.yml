@@ -9,9 +9,11 @@ on:
 jobs:
   release:
     name: Release gem
-    uses: theforeman/actions/.github/workflows/release-gem.yml@use-credential-setup
-    with:
-      allowed_owner: voxpupuli
-      environment: release
+    runs-on: ubuntu-latest
+    environment: release
+
     permissions:
       id-token: write
+
+    steps:
+      - uses: ekohl/ruby-release@master
