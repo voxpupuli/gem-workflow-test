@@ -20,6 +20,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+          ruby-version: 'ruby'
       - name: Build gem
         shell: bash
         run: gem build --verbose *.gemspec
