@@ -7,30 +7,34 @@ on:
       - '*'
 
 jobs:
-  release:
-    name: Release gem
-    runs-on: ubuntu-latest
-    environment: release
-
+  build-release:
     # Prevent releases from forked repositories
     if: github.repository_owner == 'voxpupuli'
-
+    name: Build the gem
+    runs-on: ubuntu-24.04
     permissions:
-      id-token: write # rubygems.org authentication
-      contents: read  # clone repo
-      packages: write # publish to rubygems.pkg.github.com
-
+      contents: read # clone repo
     steps:
-      - uses: voxpupuli/ruby-release@v0
+      - uses: actions/checkout@v4
+      - name: Install Ruby
+        with:
+          bundler-cache: true
+      - name: Build gem
+        shell: bash
+        run: gem build --verbose *.gemspec
+
+  release-to-github:
+    needs: build-release
+    name: Release to GitHub
+    runs-on: ubuntu-24.04
+    permissions:
+      packages: write # publish to rubygems.pkg.github.com
+    steps:
       - name: Setup GitHub packages access
         run: |
           mkdir -p ~/.gem
           echo ":github: Bearer ${{ secrets.GITHUB_TOKEN }}" >> ~/.gem/credentials
           chmod 0600 ~/.gem/credentials
-      - name: debug gem authentication
-        run: |
-          tree ~/.gem/
-          cat ~/.gem/credentials
       - name: Publish gem to GitHub packages
         run: gem push --key github --host https://rubygems.pkg.github.com/voxpupuli *.gem
       - name: Create Release Page
@@ -43,3 +47,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release upload ${{ github.ref_name }} *.gem
+
+  release-to-rubygems:
+    needs: build-release
+    name: Release gem to rubygems.org
+    runs-on: ubuntu-24.04
+    environment: release # recommended by rubygems.org
+    permissions:
+      id-token: write # rubygems.org authentication
+    steps:
+      - uses: voxpupuli/ruby-release@v0
