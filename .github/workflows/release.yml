@@ -69,11 +69,6 @@ jobs:
     permissions:
       id-token: write # rubygems.org authentication
     steps:
-      - name: Install Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-          ruby-version: 'ruby'
       - name: Download gem from GitHub cache
         uses: actions/download-artifact@v4
         with:
@@ -82,6 +77,22 @@ jobs:
       - name: Publish gem to rubygems.org
         shell: bash
         run: gem push *.gem
+
+  release-verification:
+    name: Check that all releases are done
+    runs-on: ubuntu-24.04
+    needs:
+      - release-to-github
+      - release-to-rubygems
+    steps:
+      - name: Download gem from GitHub cache
+        uses: actions/download-artifact@v4
+        with:
+          name: gem-artifact
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 'ruby'
       - name: Wait for release to propagate
         shell: bash
         run: |
