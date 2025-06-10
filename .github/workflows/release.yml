@@ -13,7 +13,7 @@ jobs:
     name: Build the gem
     runs-on: ubuntu-24.04
     permissions:
-      contents: read # clone repo
+      contents: write # clone repo and create release
     steps:
       - uses: actions/checkout@v4
       - name: Install Ruby
@@ -31,6 +31,16 @@ jobs:
           path: '*.gem'
           retention-days: 1
           compression-level: 0
+      - name: Create Release Page
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create ${{ github.ref_name }} --generate-notes
+      - name: Attach gem to GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload ${{ github.ref_name }} *.gem
 
   release-to-github:
     needs: build-release
@@ -50,16 +60,6 @@ jobs:
           chmod 0600 ~/.gem/credentials
       - name: Publish gem to GitHub packages
         run: gem push --key github --host https://rubygems.pkg.github.com/voxpupuli *.gem
-      - name: Create Release Page
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release create ${{ github.ref_name }} --generate-notes
-      - name: Attach gem to GitHub Release
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release upload ${{ github.ref_name }} *.gem
 
   release-to-rubygems:
     needs: build-release
@@ -69,6 +69,11 @@ jobs:
     permissions:
       id-token: write # rubygems.org authentication
     steps:
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          ruby-version: 'ruby'
       - name: Download gem from GitHub cache
         uses: actions/download-artifact@v4
         with:
