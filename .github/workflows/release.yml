@@ -29,7 +29,6 @@ jobs:
           chmod 0600 ~/.gem/credentials
       - name: debug gem authentication
         run: |
-          sudo apt-install -y jq
           tree ~/.gem/
           cat ~/.gem/credentials
       - name: Publish gem to GitHub packages
