@@ -24,6 +24,11 @@ jobs:
       - name: Build gem
         shell: bash
         run: gem build --verbose *.gemspec
+      - name: Upload gem to GitHub cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: gem-artifact
+          path: *.gem
 
   release-to-github:
     needs: build-release
@@ -32,6 +37,10 @@ jobs:
     permissions:
       packages: write # publish to rubygems.pkg.github.com
     steps:
+      - name: Download gem from GitHub cache
+        uses: actions/download-artifact@v4
+        with:
+          name: gem-artifact
       - name: Setup GitHub packages access
         run: |
           mkdir -p ~/.gem
@@ -58,4 +67,16 @@ jobs:
     permissions:
       id-token: write # rubygems.org authentication
     steps:
-      - uses: voxpupuli/ruby-release@v0
+      - name: Download gem from GitHub cache
+        uses: actions/download-artifact@v4
+        with:
+          name: gem-artifact
+      - uses: rubygems/configure-rubygems-credentials@v1.0.0
+      - name: Publish gem to rubygems.org
+        shell: bash
+        run: gem push *.gem
+      - name: Wait for release to propagate
+        shell: bash
+        run: |
+          gem install rubygems-await
+          gem await *.gem
