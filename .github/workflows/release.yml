@@ -12,8 +12,35 @@ jobs:
     runs-on: ubuntu-latest
     environment: release
 
+    # Prevent releases from forked repositories
+    if: github.repository_owner == 'voxpupuli'
+
     permissions:
-      id-token: write
+      id-token: write # rubygems.org authentication
+      contents: read  # clone repo
+      packages: write # publish to rubygems.pkg.github.com
 
     steps:
-      - uses: ekohl/ruby-release@v0
+      - uses: voxpupuli/ruby-release@v0
+      - name: Setup GitHub packages access
+        run: |
+          mkdir -p ~/.gem
+          echo ":github: Bearer ${{ secrets.GITHUB_TOKEN }}" >> ~/.gem/credentials
+          chmod 0600 ~/.gem/credentials
+      - name: debug gem authentication
+        run: |
+          sudo apt-install -y jq
+          tree ~/.gem/
+          cat ~/.gem/credentials
+      - name: Publish gem to GitHub packages
+        run: gem push --key github --host https://rubygems.pkg.github.com/voxpupuli *.gem
+      - name: Create Release Page
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create ${{ github.ref_name }} --generate-notes
+      - name: Attach gem to GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload ${{ github.ref_name }} *.gem
