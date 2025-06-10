@@ -81,6 +81,8 @@ jobs:
   release-verification:
     name: Check that all releases are done
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read # minimal permissions that we have to grant
     needs:
       - release-to-github
       - release-to-rubygems
