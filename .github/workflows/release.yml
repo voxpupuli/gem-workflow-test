@@ -6,6 +6,8 @@ on:
     tags:
       - '*'
 
+permissions: {}
+
 jobs:
   build-release:
     # Prevent releases from forked repositories
