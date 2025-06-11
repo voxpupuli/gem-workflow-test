@@ -14,8 +14,6 @@ jobs:
     if: github.repository_owner == 'voxpupuli'
     name: Build the gem
     runs-on: ubuntu-24.04
-    permissions:
-      contents: write # clone repo and create release
     steps:
       - uses: actions/checkout@v4
       - name: Install Ruby
@@ -32,6 +30,18 @@ jobs:
           path: '*.gem'
           retention-days: 1
           compression-level: 0
+
+  create-github-release:
+    needs: build-release
+    name: Create GitHub release
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # clone repo and create release
+    steps:
+      - name: Download gem from GitHub cache
+        uses: actions/download-artifact@v4
+        with:
+          name: gem-artifact
       - name: Create Release
         shell: bash
         env:
@@ -77,6 +87,7 @@ jobs:
     permissions:
       contents: read # minimal permissions that we have to grant
     needs:
+      - create-github-release
       - release-to-github
       - release-to-rubygems
     steps:
